@@ -21,17 +21,14 @@ class ProductCard extends StatelessWidget {
 
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Card(
-            margin: EdgeInsets.all(23),
-            child: Image.network(
-              product.thumbnail,
-              width: 70,
-              height: 70,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) {
-                return const Icon(Icons.image_not_supported, size: 50);
-              },
-            ),
+          child: Image.network(
+            product.thumbnail,
+            width: 70,
+            height: 70,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) {
+              return const Icon(Icons.image_not_supported, size: 50);
+            },
           ),
         ),
 
@@ -63,7 +60,6 @@ class ProductCard extends StatelessWidget {
               icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: () {
                 Get.defaultDialog(
-                  
                   title: "Delete Product",
                   titlePadding: EdgeInsets.only(top: 18),
                   middleText: "Are you sure you want to delete this product?",
