@@ -14,9 +14,30 @@ class AddProductController extends GetxController {
 
   final priceController = TextEditingController();
 
+  final brandController = TextEditingController();
+  final imageController = TextEditingController();
+  final ratingController = TextEditingController();
+  final stockController = TextEditingController();
+
   var selectedCategory = ''.obs;
 
+  final imageUrl = ''.obs;
+
   var isLoading = false.obs;
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    priceController.dispose();
+    // selectedCategory is an RxString (observable); it doesn't have dispose()
+    // and will be cleaned up by GetX when the controller is removed.
+    brandController.dispose();
+    imageController.dispose();
+    ratingController.dispose();
+    stockController.dispose();
+    super.dispose();
+  }
 
   Future<void> submitProduct() async {
     if (!formKey.currentState!.validate()) {
@@ -31,6 +52,18 @@ class AddProductController extends GetxController {
         description: descriptionController.text,
         price: double.parse(priceController.text),
         category: selectedCategory.value,
+
+        brand: brandController.text.isEmpty ? null : brandController.text,
+
+        image: imageController.text.isEmpty ? null : imageController.text,
+
+        rating: ratingController.text.isEmpty
+            ? null
+            : double.parse(ratingController.text),
+
+        stock: stockController.text.isEmpty
+            ? null
+            : int.parse(stockController.text),
       );
 
       Get.find<ProductController>().products.insert(0, product);

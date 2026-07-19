@@ -33,7 +33,7 @@ class Product {
       category: json['category'] ?? '',
       rating: (json['rating'] ?? 0).toDouble(),
       stock: json['stock'] ?? 0,
-      thumbnail: json['thumbnail'] ?? "https://via.placeholder.com/150",
+      thumbnail: json['thumbnail'] ?? "",
     );
   }
 }

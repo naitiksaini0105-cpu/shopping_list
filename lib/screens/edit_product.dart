@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shopping_demo/controller/add_product.dart';
+import 'package:shopping_demo/model/product_model.dart';
 import 'package:shopping_demo/controller/product_controller.dart';
+import 'package:shopping_demo/controller/edit_product.dart';
 
-class AddProductScreen extends StatelessWidget {
-  AddProductScreen({super.key});
+class EditProductScreen extends StatefulWidget {
+  final Product product;
 
-  final AddProductController controller = Get.put(AddProductController());
+  const EditProductScreen({super.key, required this.product});
+
+  @override
+  State<EditProductScreen> createState() => _EditProductScreenState();
+}
+
+class _EditProductScreenState extends State<EditProductScreen> {
+  final EditProductController controller = Get.put(EditProductController());
+
   final ProductController productController = Get.find<ProductController>();
 
   InputDecoration decoration({required String label, required IconData icon}) {
@@ -25,8 +34,9 @@ class AddProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.loadProduct(widget.product);
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Product"), centerTitle: true),
+      appBar: AppBar(title: const Text("Edit Product"), centerTitle: true),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -164,9 +174,12 @@ class AddProductScreen extends StatelessWidget {
               /// Category
               Obx(
                 () => DropdownButtonFormField<String>(
-                  initialValue: controller.selectedCategory.value.isEmpty
-                      ? null
-                      : controller.selectedCategory.value,
+                  initialValue:
+                      productController.categories.contains(
+                        controller.selectedCategory.value,
+                      )
+                      ? controller.selectedCategory.value
+                      : null,
 
                   decoration: decoration(
                     label: "Category",
@@ -176,7 +189,7 @@ class AddProductScreen extends StatelessWidget {
                   items: productController.categories
                       .where((e) => e != "All Products")
                       .map(
-                        (category) => DropdownMenuItem(
+                        (category) => DropdownMenuItem<String>(
                           value: category,
                           child: Text(category),
                         ),
@@ -204,7 +217,7 @@ class AddProductScreen extends StatelessWidget {
                 controller: controller.imageController,
                 decoration: decoration(label: "Image URL", icon: Icons.image),
                 onChanged: (value) {
-                  controller.imageUrl.value = value;
+                  controller.imageController.text = value;
                 },
               ),
 
@@ -228,13 +241,15 @@ class AddProductScreen extends StatelessWidget {
                         : const Icon(Icons.add),
 
                     label: Text(
-                      controller.isLoading.value ? "Adding..." : "Add Product",
+                      controller.isLoading.value
+                          ? "updating..."
+                          : "update Product",
                       style: const TextStyle(fontSize: 18),
                     ),
 
                     onPressed: controller.isLoading.value
                         ? null
-                        : controller.submitProduct,
+                        : controller.updateProduct,
 
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 15),

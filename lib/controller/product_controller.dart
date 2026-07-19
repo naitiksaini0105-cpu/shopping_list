@@ -42,6 +42,15 @@ class ProductController extends GetxController {
     }
   }
 
+  void updateLocalProduct(Product updatedProduct) {
+    final index = products.indexWhere((p) => p.id == updatedProduct.id);
+
+    if (index != -1) {
+      products[index] = updatedProduct;
+      products.refresh();
+    }
+  }
+
   List<Product> get favoriteProducts =>
       products.where((p) => p.isFavorite).toList();
 
@@ -75,14 +84,19 @@ class ProductController extends GetxController {
 
   Future<void> fetchProducts() async {
     try {
+      print("Fetching products...");
+
       isLoading(true);
 
       errorMessage('');
 
       final result = await apiService.fetchProducts();
-
+      print("Products received: ${result.length}");
       products.assignAll(result);
+      print(products.length);
+      print(products.first.title);
     } catch (e) {
+      print("ERROR: $e");
       errorMessage(e.toString());
     } finally {
       isLoading(false);

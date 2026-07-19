@@ -9,9 +9,9 @@ import 'package:shopping_demo/controller/theme.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
-  final ProductController controller = Get.put(ProductController());
-  final ThemeController themeController = Get.put(ThemeController());
-
+  final ProductController controller = Get.find<ProductController>();
+  final ThemeController themeController = Get.find<ThemeController>();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,10 +28,7 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.shopping_bag),
-                    Text(
-                      "Product Management",
-                      style: TextStyle(fontSize: 24),
-                    ),
+                    Text("Product Management", style: TextStyle(fontSize: 24)),
                   ],
                 ),
               ),
@@ -138,7 +135,10 @@ class HomeScreen extends StatelessWidget {
                         value: "Price (High to Low)",
                         child: Text("Price (High to Low)"),
                       ),
-                      DropdownMenuItem(value: "Rating", child: Text("Rating (High to Low)")),
+                      DropdownMenuItem(
+                        value: "Rating",
+                        child: Text("Rating (High to Low)"),
+                      ),
                       DropdownMenuItem(
                         value: "Name (A-Z)",
                         child: Text("Name (A-Z)"),

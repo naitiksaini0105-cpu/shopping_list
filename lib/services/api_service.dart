@@ -66,22 +66,31 @@ class ApiService {
     required String description,
     required double price,
     required String category,
+
+    String? brand,
+    String? image,
+    double? rating,
+    int? stock,
   }) async {
     final response = await http.post(
       Uri.parse("https://dummyjson.com/products/add"),
-
       headers: {"Content-Type": "application/json"},
-
       body: jsonEncode({
         "title": title,
         "description": description,
         "price": price,
         "category": category,
+
+        if (brand != null && brand.isNotEmpty) "brand": brand,
+        if (image != null && image.isNotEmpty) "thumbnail": image,
+        if (rating != null) "rating": rating,
+        if (stock != null) "stock": stock,
       }),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return Product.fromJson(jsonDecode(response.body));
+      final data = jsonDecode(response.body);
+      return Product.fromJson(data);
     } else {
       throw Exception("Failed to add product");
     }
@@ -113,5 +122,43 @@ class ApiService {
     } else {
       throw Exception("Failed to load category");
     }
+  }
+
+  Future<Product> updateProduct({
+    required int id,
+    required String title,
+    required String description,
+    required double price,
+    required String category,
+    String? brand,
+    String? thumbnail,
+    double? rating,
+    int? stock,
+  }) async {
+    final response = await http.put(
+      Uri.parse("https://dummyjson.com/products/$id"),
+
+      headers: {"Content-Type": "application/json"},
+
+      body: jsonEncode({
+        "title": title,
+        "description": description,
+        "price": price,
+        "category": category,
+
+        if (brand != null) "brand": brand,
+        if (thumbnail != null) "thumbnail": thumbnail,
+        if (rating != null) "rating": rating,
+        if (stock != null) "stock": stock,
+      }),
+    );
+    print("Status Code: ${response.statusCode}");
+    print("Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      return Product.fromJson(jsonDecode(response.body));
+    }
+
+    throw Exception("Update failed");
   }
 }
